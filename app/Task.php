@@ -7,6 +7,7 @@ use App\Project;
 
 class Task extends Model
 {	
+    use RecordsActivity;
 	/**
 	* Attributes to guard against mass assignment.
 	*
@@ -17,6 +18,9 @@ class Task extends Model
     protected $casts = [
         'completed' => 'boolean' //0 or 1 => false or true
     ];
+    protected static $recordableEvents = ['created', 'deleted'];
+
+    // public $old = [];
 
     // protected static function boot() //observerを使わずにイベント処理を行う方法。static::created(function(){})でtaskが生成された時のアクションを指定。
     // {
@@ -71,16 +75,18 @@ class Task extends Model
     	return "/projects/{$this->project->id}/tasks/{$this->id}";
     }
 
-    public function activity()
-    {
-        return $this->morphMany(Activity::class, 'subject')->latest();//hasManyでは1つのtaskが複数のactivityを持つ。morphManyはその1つのtaskが色々な種類に変化する場合（ここではsubject）に用いる。
-    }
+    // public function activity()
+    // {
+    //     return $this->morphMany(Activity::class, 'subject')->latest();//hasManyでは1つのtaskが複数のactivityを持つ。morphManyはその1つのtaskが色々な種類に変化する場合（ここではsubject）に用いる。
+    // }
 
-    public function recordActivity($description)
-    {
-        $this->activity()->create([
-            'project_id' => $this->project_id,
-            'description' => $description
-        ]); 
-    }
+    // public function recordActivity($description)
+    // {
+    //     $this->activity()->create([
+    //         'description' => $description,
+    //         'changes' => $this->activityChanges(),
+    //         'project_id' => class_basename($this) === 'Project' ? $this->id : $this->project_id
+    //     ]); 
+    // }
+
 }
