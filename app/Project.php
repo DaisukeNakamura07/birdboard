@@ -31,10 +31,10 @@ class Project extends Model
     	return $this->tasks()->create(compact('body'));
     }
 
-    public function activity() //traitへ抽出
-    {
-        return $this->hasMany(Activity::class)->latest();
-    }
+    // public function activity() //traitへ抽出
+    // {
+    //     return $this->hasMany(Activity::class)->latest();
+    // }
 
     // public function recordActivity($description)
     // {
