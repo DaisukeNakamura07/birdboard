@@ -24,7 +24,7 @@ class ProjectFactory
 	}
 
 
-	public function create()
+	public function create()//Projectのダミーを生成する時、同時にTaskのダミーも生成。owner_idも同時に付与。
 	{
 		$project = factory(Project::class)->create([
 			'owner_id' => $this->user ?? factory(User::class)

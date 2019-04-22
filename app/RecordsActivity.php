@@ -44,6 +44,7 @@ trait RecordsActivity
         //     array_diff($this->oldAttributes, $this->toArray()//toArray()で$project
         // ));
         $this->activity()->create([
+            'user_id' => ($this->project ?? $this)->owner->id,//下のactivityOwner()という関数をインラインした。
             'description' => $description,
             'changes' => $this->activityChanges(),
             'project_id' => class_basename($this) === 'Project' ? $this->id : $this->project_id//Project.phpのクラス定義の中で書いている場合、この$thisはProjectのインスタンスだから、project_idは自動的に生成されるから、本来は必要ない。ただしこの関数はtraitとして抽出しProjectとTaskの両方で参照させたいので、Taskが参照した場合にも使えるように、class_bassname()がProjectでない場合（Taskから参照した場合）にも、activityのproject_idにProjectインスタンスのidが生成されるようにしている。class_basenameは引数で指定したクラスから名前空間を除いたクラス名だけを返す。
@@ -54,6 +55,22 @@ trait RecordsActivity
        //      'description' => $type
        // ]);
     }
+
+    // protected function activityOwner()//activityを行ったユーザー（Projectのowner）を返す。Project以外のモデルの場合、relationよりproject->ownerと呼び出す必要がある。
+    // {
+    //     return ($this->project ?? $this)->owner;
+    //     //この1行で下のコード全て表現することができる。null合体演算子。Projectに対してrelationを持つモデル(Task)なら、$this->project->ownerを、そうでない（$thisがProject自身のインスタンス）なら$this->ownerを返す。
+
+    //     // if(auth()->check()) {//ログイン済みなら、そのままユーザー名を返す。
+    //     //     return auth()->user();
+    //     // }
+
+    //     // if(class_basename($this) === 'Project') {//Projectに関するactivityの場合。
+    //     //     return $this->owner;
+    //     // }
+
+    //     // return $this->project->owner;//Taskは自身の中にownerを持たないが、Projectに対してbelongsToなので、project->ownerとすることで間接的にownerを返す。
+    // }
 
 	public function activity()
     {
