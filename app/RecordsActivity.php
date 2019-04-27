@@ -35,7 +35,7 @@ trait RecordsActivity
     	if(isset(static::$recordableEvents)){//traitをuseするモデルクラスの中に、静的変数$recordableEventsが定義されている場合は、それを返す。Taskには定義されている。
     		return static::$recordableEvents;
     	} 
-		return ['created', 'updated', 'deleted'];//デフォルトではこの3つを返す。
+		return ['created', 'updated'];//デフォルトではこの2つを返す。
     }
 
 	public function recordActivity($description)
