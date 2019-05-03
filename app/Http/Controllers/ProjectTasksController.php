@@ -24,7 +24,7 @@ class ProjectTasksController extends Controller
 
     public function update(Project $project, Task $task)
     {
-        $this->authorize('update', $task->project);
+        $this->authorize('update', $task->project);//メソッド名と、authorizeするポリシー名が同じ場合、第一引数は省略できる。この'upadate'は省略できる。
         // if (auth()->user()->isNot($project->owner)) {
         //     abort(403);
         // }

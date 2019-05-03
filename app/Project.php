@@ -53,4 +53,14 @@ class Project extends Model
     //    // ]);
     // }
 
+    public function invite(User $user)
+    {
+        return $this->members()->attach($user);//many to many の関係では、attach()を使ってpivot table上で一方のidをもう一方に結びつけることができる。
+    }
+
+    public function members()
+    {
+        return $this->belongsToMany(User::class, 'project_members');
+    }
+
 }
