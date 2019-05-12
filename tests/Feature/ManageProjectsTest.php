@@ -66,6 +66,22 @@ class ManageProjectsTest extends TestCase
 	}
 
 	/** @test */
+	function a_user_can_see_all_projects_they_have_been_invited_to_on_their_dashboard()
+	{
+		$user = $this->signIn();
+
+		$project = tap(ProjectFactory::create())->invite($user);//tapを使えば下の2行を連結して1行で記述できる。tap()では常に1st argに渡したものがreturnされるので、一時変数を書く必要がなく、そのままメソッドチェーンを繋げられる。。
+		// $project = ProjectFactory::create();
+		// $project->invite($user);
+
+		// $project = ProjectFactory::create();
+
+		// $project->invite($user);
+
+		$this->get('/projects')->assertSee($project->title);
+	}
+
+	/** @test */
 	function a_user_can_delete_a_project()
 	{
 		$this->withoutExceptionHandling();
