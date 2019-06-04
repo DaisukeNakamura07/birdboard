@@ -9,6 +9,7 @@ use Illuminate\Validation\Rule;
 
 class ProjectInvitationRequest extends FormRequest
 {
+    protected $errorBag = 'invitations';
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -16,7 +17,7 @@ class ProjectInvitationRequest extends FormRequest
      */
     public function authorize()
     {
-        return Gate::allows('update', $this->route('project')); //コントローラのようにauthorize()は使えないのでGateファサードを使う。allows('Policyのメソッド', 'メソッドが扱う変数')。$this->route('project')で、web.phpでルーティングしているワイルドカード{project}を指す。
+        return Gate::allows('manage', $this->route('project')); //コントローラのようにauthorize()は使えないのでGateファサードを使う。allows('Policyのメソッド', 'メソッドが扱う変数')。$this->route('project')で、web.phpでルーティングしているワイルドカード{project}を指す。
     }
 
     /**

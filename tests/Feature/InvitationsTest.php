@@ -17,9 +17,20 @@ class InvitationsTest extends TestCase
 	function non_owners_may_not_invite_users()
 	{
 		// $this->withoutExceptionHandling();
-		$this->actingAs(factory(User::class)->create())
-			->post(ProjectFactory::create()->path() . '/invitations')
-			->assertStatus(403);
+		$project = ProjectFactory::create();
+		$user = factory(User::class)->create();
+
+		$assertInvitationForbidden = function() use($user, $project){
+			$this->actingAs($user)
+				->post($project->path() . '/invitations')
+				->assertStatus(403);
+		};
+
+		$assertInvitationForbidden();
+
+		$project->invite($user);
+
+		$assertInvitationForbidden();
 	}
 
 	/** @test*/
@@ -48,7 +59,7 @@ class InvitationsTest extends TestCase
 		])
 		->assertSessionHasErrors([
 			'email' => 'The user you are inviting must have a birdboard account.'
-		]);
+		], null, 'invitations');//assertSessionHasErrorsでは第3引数にerrorBagの名前を指定。何も指定しないと'default'が渡されるが、ここではProjectInvitationRequestで定義した'invitations'を渡す。第3引数を与える場合は第2引数も与える必要があるが、ここでは使わないからnullにしておく。
 	}
 
 	/** @test */
