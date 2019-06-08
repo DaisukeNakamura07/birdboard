@@ -33,8 +33,11 @@ class ManageProjectsTest extends TestCase
 		$this->delete($project->path())
 			->assertRedirect('/login');
 
-		$this->signIn();
+		$user = $this->signIn();
 		$this->delete($project->path())->assertStatus(403);
+
+		$project->invite($user);
+		$this->actingAs($user)->delete($project->path())->assertStatus(403);
 	}
 
 	/** @test **/
@@ -45,24 +48,30 @@ class ManageProjectsTest extends TestCase
 
 		$this->get('/projects/create')->assertStatus(200); //HTTP status code : Success
 		
-		$attributes = [
-			'title' => $this->faker->sentence,
-			'description' => $this->faker->sentence,
-			'notes' => 'General notes here.'
-		];
+		// $attributes = [
+		// 	'title' => $this->faker->sentence,
+		// 	'description' => $this->faker->sentence,
+		// 	'notes' => 'General notes here.'
+		// ];
 
-		$response = $this->post('/projects', $attributes);
 
-		$project = Project::where($attributes)->first();
 
-		$response->assertRedirect($project->path());
+		// $project = Project::where($attributes)->first();
+
+		// $response->assertRedirect($project->path());
 
 		// $this->assertDatabaseHas('projects', $attributes);
-		
-		$this->get($project->path())
+			
+		$this->followingRedirects()//これがないと302エラーが返る。302はリダイレクトが起きた時に表示される。get('/projects/create')が成功したらassertRedirect()をする設定なので、これが必要。
+			->post('/projects', $attributes = factory(Project::class)->raw())//rawメソッドを使うと、データベースにpersistしない。
 			->assertSee($attributes['title'])
 			->assertSee($attributes['description'])
-			->assertSee($attributes['notes']);
+			->assertSee($attributes['notes']);	
+
+		// $this->get($project->path())
+		// 	->assertSee($attributes['title'])
+		// 	->assertSee($attributes['description'])
+		// 	->assertSee($attributes['notes']);
 	}
 
 	/** @test */
